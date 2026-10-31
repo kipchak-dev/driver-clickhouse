@@ -1,0 +1,18 @@
+# ClickHouse for the integration tests: HTTP on 58123 and HTTPS on 58443 (certificates from start-services.sh).
+name: kipchak-clickhouse-tests
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.8
+    environment:
+      CLICKHOUSE_USER: kipchak
+      CLICKHOUSE_PASSWORD: kipchak-password
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports:
+      - "58123:8123"
+      - "58443:8443"
+    volumes:
+      - ./clickhouse/tls.xml:/etc/clickhouse-server/config.d/tls.xml:ro
+      - ./.certs:/etc/clickhouse-server/certs:ro
+    ulimits:
+      nofile: { soft: 262144, hard: 262144 }

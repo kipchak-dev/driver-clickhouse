@@ -1,0 +1,43 @@
+{
+    "name": "kipchak/driver-clickhouse",
+    "type": "library",
+    "description": "A ClickHouse driver for analytics queries and high-volume inserts from the Kipchak API Development Kit (ADK)",
+    "keywords": [
+        "APIs",
+        "ClickHouse",
+        "Analytics",
+        "OLAP",
+        "Database",
+        "Microservices",
+        "Mamluk"
+    ],
+    "homepage": "https://mamluk.net",
+    "license": "MIT",
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Kipchak\\Driver\\ClickHouse\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kipchak\\Driver\\ClickHouse\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.4",
+        "kipchak/core": "^2 || ^3",
+        "kipchak/driver-config": "^1",
+        "kipchak/driver-filecache": "^1.28",
+        "kipchak/driver-http": "^2.10",
+        "psr/log": "^2 || ^3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12",
+        "psr/simple-cache": "^2 || ^3"
+    }
+}
