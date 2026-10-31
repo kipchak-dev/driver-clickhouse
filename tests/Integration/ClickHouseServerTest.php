@@ -203,6 +203,41 @@ final class ClickHouseServerTest extends TestCase
         $this->assertSame(['id' => 7, 'user' => '', 'score' => null], $client->first('SELECT id, user, score FROM events'));
     }
 
+    public function testInsertsDatesIntoEveryDateTimeColumn(): void
+    {
+        $client = $this->client();
+        $client->execute("CREATE TABLE dates (id UInt8, plain DateTime, zoned DateTime('Asia/Dubai'), milli DateTime64(3), micro DateTime64(6, 'America/New_York')) ENGINE = Memory");
+
+        // DateTime refuses a fractional Unix timestamp, so dates with microseconds must still reach it.
+        $withMicroseconds = new DateTimeImmutable('2026-10-31 13:14:00.407722', new \DateTimeZone('Asia/Dubai'));
+        $wholeSecond = new DateTimeImmutable('@1700000000');
+        $client->insert('dates', [
+            ['id' => 1, 'plain' => $withMicroseconds, 'zoned' => $withMicroseconds, 'milli' => $withMicroseconds, 'micro' => $withMicroseconds],
+            ['id' => 2, 'plain' => $wholeSecond, 'zoned' => $wholeSecond, 'milli' => $wholeSecond, 'micro' => $wholeSecond],
+        ]);
+
+        $rows = $client->select('SELECT toUnixTimestamp(plain) AS plain, toUnixTimestamp(zoned) AS zoned, toUnixTimestamp64Milli(milli) AS milli, toUnixTimestamp64Micro(micro) AS micro FROM dates ORDER BY id')->rows();
+        $client->execute('DROP TABLE dates');
+
+        $this->assertSame(['plain' => 1793438040, 'zoned' => 1793438040, 'milli' => 1793438040407, 'micro' => 1793438040407722], $rows[0]);
+        $this->assertSame(['plain' => 1700000000, 'zoned' => 1700000000, 'milli' => 1700000000000, 'micro' => 1700000000000000], $rows[1]);
+    }
+
+    public function testDateParametersWithMicroseconds(): void
+    {
+        // As in a "last 7 days" query: DateTimeImmutable('-7 days') has microseconds, which DateTime refuses.
+        $at = new DateTimeImmutable('2026-10-31 13:14:00.407722', new \DateTimeZone('Asia/Dubai'));
+
+        $this->assertSame(
+            ['plain' => 1793438040, 'zoned' => 1793438040, 'micro' => '1793438040407722', 'days' => [1793438040]],
+            $this->client()->first(
+                "SELECT toUnixTimestamp({plain:DateTime}) AS plain, toUnixTimestamp({zoned:DateTime('Asia/Dubai')}) AS zoned,
+                        toString(toUnixTimestamp64Micro({micro:DateTime64(6)})) AS micro, arrayMap(d -> toUnixTimestamp(d), {days:Array(DateTime)}) AS days",
+                ['plain' => $at, 'zoned' => $at, 'micro' => $at, 'days' => [$at]],
+            )
+        );
+    }
+
     public function testAsyncInsert(): void
     {
         $summary = $this->client()->insert('events', self::rows(10), ['async_insert' => 1, 'wait_for_async_insert' => 1]);

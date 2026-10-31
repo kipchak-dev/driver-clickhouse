@@ -52,6 +52,19 @@ final class QueryTest extends TestCase
         $this->assertSame(['param_user' => '42', 'param_from' => '2026-01-01'], Parameter::toQuery(['user' => 42, 'from' => '2026-01-01']));
     }
 
+    public function testDatesFollowTheirPlaceholdersType(): void
+    {
+        $at = new DateTimeImmutable('2026-10-29 07:30:00.000250 UTC');
+
+        $this->assertSame(
+            ['param_from' => '1793259000', 'param_to' => '1793259000.000250', 'param_days' => "['1793259000']", 'param_other' => '1793259000.000250'],
+            Parameter::toQuery(
+                ['from' => $at, 'to' => $at, 'days' => [$at], 'other' => $at],
+                'SELECT 1 WHERE at >= { from : DateTime } AND at < {to:DateTime64(6)} AND day IN {days:Array(Nullable(DateTime))}',
+            )
+        );
+    }
+
     public function testRejectsBadNames(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -69,7 +82,7 @@ final class QueryTest extends TestCase
     public function testInsertValues(): void
     {
         $this->assertSame(
-            ['at' => '1700000000.500000', 'plan' => 'pro', 'tags' => ['a'], 'n' => 1],
+            ['at' => '2023-11-14T22:13:20.500000Z', 'plan' => 'pro', 'tags' => ['a'], 'n' => 1],
             Parameter::forInsert(['at' => new DateTimeImmutable('@1700000000.5'), 'plan' => Plan::Pro, 'tags' => ['a'], 'n' => 1])
         );
     }

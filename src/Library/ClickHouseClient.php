@@ -40,6 +40,14 @@ final class ClickHouseClient
         'cancel_http_readonly_queries_on_client_close' => 1,
     ];
 
+    /**
+     * Settings for inserts: dates with microseconds are sent as ISO 8601 in UTC, which DateTime columns only read
+     * with best_effort parsing (they refuse a fractional Unix timestamp).
+     */
+    private const array INSERT_DEFAULTS = [
+        'date_time_input_format' => 'best_effort',
+    ];
+
     public function __construct(
         private readonly Transport $transport,
         private readonly ConnectionConfig $config,
@@ -73,7 +81,7 @@ final class ClickHouseClient
         $queryId ??= self::newQueryId();
         $response = $this->transport->post(
             $sql,
-            $this->query($settings, $params, $queryId, 'JSON', read: true),
+            $this->query($settings, $params, $queryId, 'JSON', read: true, sql: $sql),
             $queryId,
             readOnly: true,
         );
@@ -139,7 +147,7 @@ final class ClickHouseClient
         $queryId ??= self::newQueryId();
         $response = $this->transport->post(
             $sql,
-            $this->query($settings, $params, $queryId, 'JSONEachRowWithProgress', read: true),
+            $this->query($settings, $params, $queryId, 'JSONEachRowWithProgress', read: true, sql: $sql),
             $queryId,
             readOnly: true,
             stream: true,
@@ -198,7 +206,8 @@ final class ClickHouseClient
      * INSERT per batch. Columns missing from a row get their default. Each batch is atomic for a MergeTree table;
      * a failure leaves earlier batches inserted.
      *
-     * DateTimeInterface values become Unix timestamps (with microseconds for DateTime64), enums their values.
+     * DateTimeInterface values become Unix timestamps, or ISO 8601 in UTC when they have microseconds (kept by
+     * DateTime64, dropped by DateTime), and enums their values.
      *
      * For many small inserts from concurrent requests, pass ['async_insert' => 1, 'wait_for_async_insert' => 1]
      * so ClickHouse batches them on the server.
@@ -246,7 +255,7 @@ final class ClickHouseClient
     public function execute(string $sql, array $params = [], array $settings = [], ?string $queryId = null): Summary
     {
         $queryId ??= self::newQueryId();
-        $response = $this->transport->post($sql, $this->query($settings, $params, $queryId), $queryId, readOnly: false);
+        $response = $this->transport->post($sql, $this->query($settings, $params, $queryId, sql: $sql), $queryId, readOnly: false);
 
         return Summary::fromHeader($response->header('X-ClickHouse-Query-Id') ?: $queryId, $response->header('X-ClickHouse-Summary') ?: null);
     }
@@ -294,7 +303,7 @@ final class ClickHouseClient
 
     private function sendInsert(string $body, array $settings, string $queryId): Summary
     {
-        $response = $this->transport->post($body, $this->query($settings, [], $queryId), $queryId, readOnly: false);
+        $response = $this->transport->post($body, $this->query($settings, [], $queryId, insert: true), $queryId, readOnly: false);
 
         return Summary::fromHeader($response->header('X-ClickHouse-Query-Id') ?: $queryId, $response->header('X-ClickHouse-Summary') ?: null);
     }
@@ -305,9 +314,9 @@ final class ClickHouseClient
      *
      * @return array<string, scalar>
      */
-    private function query(array $settings, array $params, string $queryId, ?string $format = null, bool $read = false): array
+    private function query(array $settings, array $params, string $queryId, ?string $format = null, bool $read = false, bool $insert = false, string $sql = ''): array
     {
-        $query = [...($read ? self::READ_DEFAULTS : []), ...$this->config->settings, ...$settings];
+        $query = [...($read ? self::READ_DEFAULTS : []), ...($insert ? self::INSERT_DEFAULTS : []), ...$this->config->settings, ...$settings];
         foreach ($query as $name => $value) {
             if (!is_string($name) || !is_scalar($value)) {
                 throw new InvalidArgumentException('Settings must map ClickHouse setting names to scalar values.');
@@ -317,7 +326,7 @@ final class ClickHouseClient
             }
         }
 
-        $query = [...$query, ...Parameter::toQuery($params), 'query_id' => $queryId];
+        $query = [...$query, ...Parameter::toQuery($params, $sql), 'query_id' => $queryId];
         if ($format !== null) {
             $query['default_format'] = $format;
         }
@@ -362,7 +371,7 @@ final class ClickHouseClient
             );
         }
 
-        $key = hash('sha256', serialize([$this->config->database, $sql, Parameter::toQuery($params), $settings]));
+        $key = hash('sha256', serialize([$this->config->database, $sql, Parameter::toQuery($params, $sql), $settings]));
 
         return $this->cache->getItem($key);
     }

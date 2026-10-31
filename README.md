@@ -109,7 +109,7 @@ that type, so a value can never change the query. PHP values are sent as follows
 |---|---|
 | `null` | `NULL`, for `Nullable` types |
 | `bool`, `int`, `float`, `string` | as they are (`true`/`false` for `Bool`) |
-| `DateTimeInterface` | a Unix timestamp, with microseconds when present, so time zones cannot be misread (`DateTime`, `DateTime64`). Pass `Date` values as `'Y-m-d'` strings. |
+| `DateTimeInterface` | a Unix timestamp, so time zones cannot be misread: whole seconds for a `DateTime` placeholder, with microseconds for `DateTime64`. Pass `Date` values as `'Y-m-d'` strings. |
 | a list | `Array`, nesting |
 | an array with string keys | `Map` |
 | `BackedEnum`, `Stringable` | the value, the string |
@@ -146,7 +146,8 @@ $summary = $clickhouse->insert('events', [
 $summary->writtenRows;   // 2
 ```
 
-Rows are arrays (or objects) of column => value; missing columns get their defaults. `insert()` accepts any
+Rows are arrays (or objects) of column => value; missing columns get their defaults. Dates go into `DateTime`
+and `DateTime64` columns alike, the latter keeping their microseconds. `insert()` accepts any
 iterable, including a generator, and sends `insert_batch_size` rows per `INSERT`. Each batch is atomic for a
 MergeTree table; if one fails, earlier batches stay inserted.
 
