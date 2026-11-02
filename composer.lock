@@ -1319,11 +1319,11 @@
         },
         {
             "name": "kipchak/core",
-            "version": "3.13",
+            "version": "3.14",
             "source": {
                 "type": "git",
                 "url": "https://1x.ax/mamluk/kipchak/core",
-                "reference": "0c4cb01c5697de81d8613acefc3bd760701e17c9"
+                "reference": "6d7325909995d3f38808e48249d97f1b39c85aa3"
             },
             "require": {
                 "cuyz/valinor": "^2",
@@ -1352,15 +1352,15 @@
                 "apis",
                 "microservices"
             ],
-            "time": "2026-11-01T05:25:39+00:00"
+            "time": "2026-11-02T11:05:17+00:00"
         },
         {
             "name": "kipchak/driver-config",
-            "version": "1.31",
+            "version": "1.32",
             "source": {
                 "type": "git",
                 "url": "https://1x.ax/mamluk/kipchak/drivers/config",
-                "reference": "147e0622e03a199d65e410f1834a8b40baec5e63"
+                "reference": "38f7012f3bf8aa6c0f2d2df61b2c21161cc462d2"
             },
             "require": {
                 "kipchak/core": "^2 || ^3"
@@ -1384,15 +1384,15 @@
                 "http",
                 "microservices"
             ],
-            "time": "2026-11-01T05:25:57+00:00"
+            "time": "2026-11-02T11:05:36+00:00"
         },
         {
             "name": "kipchak/driver-filecache",
-            "version": "1.31",
+            "version": "1.32",
             "source": {
                 "type": "git",
                 "url": "https://1x.ax/mamluk/kipchak/drivers/filecache",
-                "reference": "5f88aa9989c5696bae4b8aec456deaea40bfc94d"
+                "reference": "f1815a94fef84bbe1b7197ee0c59c3977cb5ce10"
             },
             "require": {
                 "kipchak/core": "^2 || ^3",
@@ -1417,15 +1417,15 @@
                 "http",
                 "microservices"
             ],
-            "time": "2026-11-01T05:26:55+00:00"
+            "time": "2026-11-02T11:06:38+00:00"
         },
         {
             "name": "kipchak/driver-http",
-            "version": "2.14",
+            "version": "2.15",
             "source": {
                 "type": "git",
                 "url": "https://1x.ax/mamluk/kipchak/drivers/http",
-                "reference": "1c94cd6d7f32087c369276b37957a4b476c51335"
+                "reference": "923b06aa1b3148d2f644f880a3d51387ea1ce098"
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.10",
@@ -1460,7 +1460,7 @@
                 "http",
                 "microservices"
             ],
-            "time": "2026-11-01T05:27:15+00:00"
+            "time": "2026-11-02T11:07:00+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -6107,16 +6107,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.5.42",
+            "version": "12.5.43",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "1d6dbe748c079e5d2b03bca1be69d0f4cc52a578"
+                "reference": "1d5a4a3c98fa1ca3a51402c74b66c2c8df85e0bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1d6dbe748c079e5d2b03bca1be69d0f4cc52a578",
-                "reference": "1d6dbe748c079e5d2b03bca1be69d0f4cc52a578",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1d5a4a3c98fa1ca3a51402c74b66c2c8df85e0bb",
+                "reference": "1d5a4a3c98fa1ca3a51402c74b66c2c8df85e0bb",
                 "shasum": ""
             },
             "require": {
@@ -6185,7 +6185,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.42"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.43"
             },
             "funding": [
                 {
@@ -6193,7 +6193,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-10-27T04:15:03+00:00"
+            "time": "2026-11-02T07:10:00+00:00"
         },
         {
             "name": "sebastian/cli-parser",
