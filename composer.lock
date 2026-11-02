@@ -1319,11 +1319,11 @@
         },
         {
             "name": "kipchak/core",
-            "version": "3.14",
+            "version": "3.15",
             "source": {
                 "type": "git",
                 "url": "https://1x.ax/mamluk/kipchak/core",
-                "reference": "6d7325909995d3f38808e48249d97f1b39c85aa3"
+                "reference": "1d07aada639ee3d6edd247d03a8fe1b6927559d4"
             },
             "require": {
                 "cuyz/valinor": "^2",
@@ -1352,15 +1352,15 @@
                 "apis",
                 "microservices"
             ],
-            "time": "2026-11-02T11:05:17+00:00"
+            "time": "2026-11-02T16:10:48+00:00"
         },
         {
             "name": "kipchak/driver-config",
-            "version": "1.32",
+            "version": "1.33",
             "source": {
                 "type": "git",
                 "url": "https://1x.ax/mamluk/kipchak/drivers/config",
-                "reference": "38f7012f3bf8aa6c0f2d2df61b2c21161cc462d2"
+                "reference": "986d303acf5911636fbd5992b381361399ebc708"
             },
             "require": {
                 "kipchak/core": "^2 || ^3"
@@ -1384,15 +1384,15 @@
                 "http",
                 "microservices"
             ],
-            "time": "2026-11-02T11:05:36+00:00"
+            "time": "2026-11-02T16:12:52+00:00"
         },
         {
             "name": "kipchak/driver-filecache",
-            "version": "1.32",
+            "version": "1.33",
             "source": {
                 "type": "git",
                 "url": "https://1x.ax/mamluk/kipchak/drivers/filecache",
-                "reference": "f1815a94fef84bbe1b7197ee0c59c3977cb5ce10"
+                "reference": "516d68e27449cff3cf325f511e26a1d951bb669b"
             },
             "require": {
                 "kipchak/core": "^2 || ^3",
@@ -1417,15 +1417,15 @@
                 "http",
                 "microservices"
             ],
-            "time": "2026-11-02T11:06:38+00:00"
+            "time": "2026-11-02T16:14:10+00:00"
         },
         {
             "name": "kipchak/driver-http",
-            "version": "2.15",
+            "version": "2.16",
             "source": {
                 "type": "git",
                 "url": "https://1x.ax/mamluk/kipchak/drivers/http",
-                "reference": "923b06aa1b3148d2f644f880a3d51387ea1ce098"
+                "reference": "f3858578fc95f18d364dc18a0db5557abfb8a457"
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.10",
@@ -1460,7 +1460,7 @@
                 "http",
                 "microservices"
             ],
-            "time": "2026-11-02T11:07:00+00:00"
+            "time": "2026-11-02T16:14:45+00:00"
         },
         {
             "name": "laravel/serializable-closure",
